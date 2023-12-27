@@ -69,7 +69,9 @@ JENKINS_AGENT_SSH_PUBKEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA7Fuq5QayqayvakXP
 source .env
 ```
 ### Reload the agent container
+```shell
 docker compose restart jenkins_agent
+```
 ### Create a new node
 * Into the jenkins controller goto Manage Jenkins->Nodes
 * Push New Node
@@ -91,8 +93,21 @@ docker compose restart jenkins_agent
 * SecondsToWaitBetweenRetries: 15
 * Avalilability: Keep this agent online as much as possible
 * Push Save
+* Change the jenkins_ssh_agent permissions
+```shell
+sudo chmod -R 777 jenkins_ssh_agent
+```
+* Check in the Node log if all goes right
 
-
+### Change the controller node configuration
+* Goto Manage Jenkins->System Configuration->Nodes
+* Select Main Node
+* Configuration
+* Number of executors: 0
+* Labels: none
+* Use: Only binded jobs
+### Check a new job
+* In a job try to execute the build on the new node
 ## Reference
 * [Jenkins controller-agent (master-slave) setup in 10 minutes using Docker](https://dev.to/ashiqursuperfly/jenkins-controller-agent-master-slave-setup-in-10-minutes-using-docker-2a78)
 * [Docker agent ssh image](https://hub.docker.com/r/jenkins/inbound-agent/)
