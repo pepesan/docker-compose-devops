@@ -1,0 +1,19 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Download Git') {
+            steps {
+                // Get some code from a GitHub repository
+                git (branch:"main", url:"https://github.com/pepesan/curso-spring-boot-3.1-aplicacion-rest-twitch.git")
+                // sh 'git clone -b main https://github.com/pepesan/curso-spring-boot-3.1-aplicacion-rest-twitch.git .'
+            }
+        }
+        stage('Build') {
+            steps {
+                // Run Maven on a Unix agent.
+                sh "echo 'build'"
+            }
+        }
+    }
+}

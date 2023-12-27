@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Download Git') {
+            steps {
+                // Get some code from a GitHub repository
+                git (branch:"main", url:"https://github.com/pepesan/curso-spring-boot-3.1-aplicacion-rest-twitch.git")
+                // sh 'git clone -b main https://github.com/pepesan/curso-spring-boot-3.1-aplicacion-rest-twitch.git .'
+            }
+        }
+        stage('Build') {
+            steps {
+                // Run Maven on a Unix agent.
+                sh "mvn clean compile -DskipTests"
+            }
+        }
+        stage('Test') {
+            steps {
+                // Run Maven on a Unix agent.
+                sh "mvn test"
+            }
+            post{
+                success {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                }
+            }
+
+        }
+        stage('Package') {
+            steps {
+                // Run Maven on a Unix agent.
+                sh "mvn package"
+            }
+            post {
+                // If Maven was able to run the tests, even if some of the test
+                // failed, record the test results and archive the jar file.
+                success {
+                    archiveArtifacts 'target/*.jar'
+                }
+            }
+        }
+    }
+}
